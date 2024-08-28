@@ -1,0 +1,12 @@
+@import "./normalize.scss";
+@import "./typography.scss";
+@import "./fonts.scss";
+@import "./theme.scss";
+
+#app {
+	min-height: 100vh;
+	color: black;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-style: 400;
+}
