@@ -5,6 +5,7 @@ export interface User {
   children: User[]
 }
 
-export type DraftUser = Pick<User, 'id'> & Partial<Pick<User, 'name' | 'age'>>
+export type DraftUser = Partial<Pick<User, 'name' | 'age'>>
+export type DraftUserWithId = Pick<User, 'id'> & DraftUser
 
-export type UpdateUserInfoParams = Partial<Pick<User, 'name' | 'age'>>
+export type UpdateUserDataDTO = Partial<Pick<User, 'name' | 'age'>>

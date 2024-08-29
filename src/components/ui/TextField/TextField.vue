@@ -2,18 +2,13 @@
 import Typography from '../Typography/Typography.vue'
 import type { TextFieldProps } from './TextField.interface'
 
-const { label, name, type, placeholder, isReadonly, errorMessage } = withDefaults(
-  defineProps<TextFieldProps>(),
-  {
-    type: 'text'
-  }
-)
+withDefaults(defineProps<TextFieldProps>(), {
+  type: 'text'
+})
 
 const model = defineModel({
   required: false
 })
-
-const hasError = Boolean(errorMessage)
 </script>
 
 <template>
@@ -21,12 +16,12 @@ const hasError = Boolean(errorMessage)
     :class="[
       'field',
       {
-        field_error: hasError,
+        field_error: isError,
         field_readonly: isReadonly
       }
     ]"
   >
-    <Typography v-if="hasError" type="p-2" class="field__error">{{ errorMessage }}</Typography>
+    <Typography v-if="isError" type="p-2" class="field__error">{{ errorMessage }}</Typography>
 
     <div class="field__content">
       <Typography class="field__caption" type="p-3">{{ label }}</Typography>
@@ -46,6 +41,7 @@ const hasError = Boolean(errorMessage)
 <style scoped lang="scss">
 .field {
   &__error {
+    color: #db524e; // COLORS
   }
 
   &__content {
@@ -67,6 +63,7 @@ const hasError = Boolean(errorMessage)
   &__input {
     font-size: var(--typography-p-2);
     color: #000000; // COLORS
+    background: none;
     outline: none;
     border: none;
 
@@ -80,7 +77,7 @@ const hasError = Boolean(errorMessage)
     }
 
     &::placeholder {
-      color: #11111148;
+      color: #11111148; // COLORS
     }
   }
 
@@ -89,6 +86,12 @@ const hasError = Boolean(errorMessage)
 
     .field__input {
       cursor: default;
+    }
+  }
+
+  &_error {
+    .field__content {
+      background-color: #f9e3e3; // COLORS
     }
   }
 }

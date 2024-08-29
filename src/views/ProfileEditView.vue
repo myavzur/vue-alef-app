@@ -1,179 +1,114 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
-
-import { useUserStore } from '@/stores'
-import type { DraftUser, UpdateUserInfoParams, User } from '@/interfaces'
 import ProfileLayout from '@/components/layouts/ProfileLayout'
 import TextField from '@/components/ui/TextField'
 import Button from '@/components/ui/Button'
 import { IconPlus } from '@/components/icons'
+import ProfileInfo, { ProfileInfoRow } from '@/components/ui/ProfileInfo'
+import { useUserDraftChildren, useUserData } from '@/composables'
 import Typography from '@/components/ui/Typography/Typography.vue'
 
-const userStore = useUserStore()
+const { userData, userDataErrors, saveData, validateData } = useUserData()
 
-const userData = reactive<UpdateUserInfoParams>({
-  name: userStore?.user?.name,
-  age: userStore?.user?.age
-})
-
-const userDataErrors = reactive<Record<keyof UpdateUserInfoParams, string>>({
-  age: '',
-  name: ''
-})
-
-const draftChildren = reactive<Map<User['id'], DraftUser>>(new Map([]))
-const draftChildrenErrors = reactive<Map<User['id'], DraftUser>>(new Map([]))
-
-// Total length of existing children and draft children
-const totalChildren = computed(() => {
-  if (!userStore?.user?.children) return draftChildren.size
-  return userStore?.user.children.length + draftChildren.size
-})
-
-const removeChild = (id: User['id']) => {
-  userStore.removeUserChild(id)
-}
-
-const createDraftChild = () => {
-  const childId = Math.random()
-
-  draftChildren.set(childId, {
-    id: childId,
-    name: undefined,
-    age: undefined
-  })
-}
-
-const removeDraftChild = (id: User['id']) => {
-  draftChildren.delete(id)
-}
+const {
+  draftChildren,
+  createDraftChild,
+  removeDraftChild,
+  hasExistingChildren,
+  removeExistingChild,
+  draftChildrenErrors,
+  saveDraftChildren,
+  totalChildren,
+  validateDraftChildren
+} = useUserDraftChildren()
 
 const handleSubmit = () => {
-  console.log(userData)
-  if (!userData.name) {
-    userDataErrors.name = 'Это поле обязательно для заполнения'
-    console.log(userDataErrors)
-    return
-  }
+  const isUserDataValid = validateData()
+  const isDraftChildrenValid = validateDraftChildren()
 
-  if (!userData.age) {
-    userDataErrors.age = 'Это поле обязательно для заполнения'
-    return
-  }
+  if (!isUserDataValid || !isDraftChildrenValid) return
 
-  userStore.updateUserInfo(userData)
-  userStore.addUserChildren(Array.from(draftChildren.values()) as User[])
-
-  draftChildren.clear()
+  saveData()
+  saveDraftChildren()
 }
 </script>
 
 <template>
-  <ProfileLayout>
-    <div class="info">
-      <div class="info__header">
-        <Typography type="p-2" weight="medium">Персональные данные</Typography>
-      </div>
+  <ProfileLayout class="profile">
+    <ProfileInfo class="profile__info" label="Персональные данные">
+      <TextField
+        label="Имя"
+        name="name"
+        placeholder="Введите имя"
+        v-model.trim="userData.name"
+        :isError="Boolean(userDataErrors.name)"
+        :errorMessage="userDataErrors.name"
+      />
 
-      <div class="info__rows">
-        <TextField
-          label="Имя"
-          name="name"
-          placeholder="Введите имя"
-          v-model.trim="userData.name"
-          :errorMessage="userDataErrors.name"
-        />
+      <TextField
+        label="Возраст"
+        name="age"
+        placeholder="Введите возраст"
+        type="number"
+        v-model="userData.age"
+        :isError="Boolean(userDataErrors.age)"
+        :errorMessage="userDataErrors.age"
+      />
+    </ProfileInfo>
 
-        <TextField
-          label="Возраст"
-          name="age"
-          placeholder="Введите возраст"
-          type="number"
-          v-model="userData.age"
-          :errorMessage="userDataErrors.age"
-        />
-      </div>
-    </div>
-
-    <div class="info">
-      <div class="info__header">
-        <Typography type="p-2" weight="medium">Дети (макс. 5)</Typography>
-
+    <ProfileInfo class="profile__info" label="Дети (макс. 5)">
+      <template #controls>
         <Button :disabled="totalChildren >= 5" @click="createDraftChild" kind="secondary">
           <template #icon><IconPlus /></template>
           <template #default>Добавить ребенка</template>
         </Button>
-      </div>
+      </template>
 
-      <div class="info__rows">
-        <template v-if="userStore.user?.children && userStore.user.children.length >= 0">
-          <div class="info__row" v-for="child in userStore.user.children" :key="child.id">
-            <TextField
-              v-model="child.name"
-              label="Имя"
-              placeholder="Введите имя"
-              name="name"
-              isReadonly
-            />
+      <template #default>
+        <template v-if="hasExistingChildren">
+          <ProfileInfoRow v-for="child of existingChildren" :key="child.id">
+            <TextField v-model="child.name" label="Имя" isReadonly />
+            <TextField v-model="child.age" label="Возраст" isReadonly />
 
-            <TextField
-              v-model="child.age"
-              label="Возраст"
-              placeholder="Введите возраст"
-              name="age"
-              type="number"
-              isReadonly
-            />
-
-            <Button kind="primary-white" @click="removeChild(child.id)">Удалить</Button>
-          </div>
+            <Button kind="primary-white" @click="removeExistingChild(child.id)">Удалить</Button>
+          </ProfileInfoRow>
         </template>
 
-        <div class="info__row" v-for="draftChild of draftChildren.values()" :key="draftChild.id">
-          <TextField label="Имя" name="name" placeholder="Введите имя" v-model="draftChild.name" />
+        <Typography v-else type="p-3">Имеются дети? Добавьте их здесь.</Typography>
 
-          <TextField
-            v-model="draftChild.age"
-            label="Возраст"
-            name="age"
-            placeholder="Введите возраст"
-            type="number"
-          />
+        <template v-if="draftChildren.size > 0">
+          <ProfileInfoRow v-for="draftChild of draftChildren.values()" :key="draftChild.id">
+            <TextField
+              label="Имя"
+              name="child-name"
+              placeholder="Введите имя"
+              v-model="draftChild.name"
+              :isError="Boolean(draftChildrenErrors.get(draftChild.id)?.name)"
+            />
 
-          <Button kind="primary-white" @click="removeDraftChild(draftChild.id)">Удалить</Button>
-        </div>
-      </div>
-    </div>
+            <TextField
+              v-model="draftChild.age"
+              label="Возраст"
+              name="child-age"
+              placeholder="Введите возраст"
+              type="number"
+              :isError="Boolean(draftChildrenErrors.get(draftChild.id)?.age)"
+            />
 
-    <Button class="submit" kind="primary" @click="handleSubmit">Сохранить</Button>
+            <Button kind="primary-white" @click="removeDraftChild(draftChild.id)"> Удалить </Button>
+          </ProfileInfoRow>
+        </template>
+      </template>
+    </ProfileInfo>
+
+    <Button class="profile__submit" kind="primary" @click="handleSubmit">Сохранить</Button>
   </ProfileLayout>
 </template>
 
 <style scoped lang="scss">
-.info {
-  margin-top: 30px;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.profile {
+  &__info,
+  &__submit {
+    margin-top: 30px;
   }
-
-  &__rows {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  &__row {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-}
-
-.submit {
-  margin-top: 30px;
 }
 </style>

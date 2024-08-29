@@ -1,4 +1,4 @@
 export enum RoutePath {
-	PROFILE = "/profile",
-	PERSONAL_INFO = "/personal-info",
+  PROFILE = '/profile',
+  PERSONAL_INFO = '/personal-info'
 }
