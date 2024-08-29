@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { TabProps } from './Tab.interface'
+import Typography from '@/components/ui/Typography'
 </script>
 
 <template>
   <button class="tab">
-    <p class="tab__label">
+    <Typography type="p-2">
       <slot></slot>
-    </p>
+    </Typography>
   </button>
 </template>
 

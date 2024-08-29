@@ -8,6 +8,7 @@ import TextField from '@/components/ui/TextField'
 import Button from '@/components/ui/Button'
 import { IconPlus } from '@/components/icons'
 import { storeToRefs } from 'pinia'
+import Typography from '@/components/ui/Typography/Typography.vue'
 
 const userStore = useUserStore()
 
@@ -63,7 +64,7 @@ const handleSubmit = () => {
   <ProfileLayout>
     <div class="info">
       <div class="info__header">
-        <p class="info__caption">Персональные данные</p>
+        <Typography type="p-2" weight="medium">Персональные данные</Typography>
       </div>
 
       <div class="info__rows">
@@ -81,7 +82,7 @@ const handleSubmit = () => {
 
     <div class="info">
       <div class="info__header">
-        <p class="info__caption">Дети (макс. 5)</p>
+        <Typography type="p-2" weight="medium">Дети (макс. 5)</Typography>
 
         <Button :disabled="totalChildren >= 5" @click="createDraftChild" kind="secondary">
           <template #icon><IconPlus /></template>
@@ -145,10 +146,6 @@ const handleSubmit = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-
-  &__caption {
-    font-weight: 500;
   }
 
   &__rows {

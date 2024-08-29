@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Typography from '../Typography/Typography.vue'
 import type { TextFieldProps } from './TextField.interface'
 
 const { label, name, type, placeholder, isReadonly } = withDefaults(defineProps<TextFieldProps>(), {
@@ -19,7 +20,7 @@ const model = defineModel({
       }
     ]"
   >
-    <p class="field__caption">{{ label }}</p>
+    <Typography class="field__caption" type="p-3">{{ label }}</Typography>
 
     <input
       class="field__input"
@@ -53,7 +54,6 @@ const model = defineModel({
   }
 
   &__caption {
-    font-size: var(--typography-p-3);
     color: #11111148; // COLORS
   }
 

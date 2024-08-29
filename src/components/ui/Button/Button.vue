@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ButtonProps } from './Button.interface'
+import Typography from '@/components/ui/Typography'
 
 const { kind } = withDefaults(defineProps<ButtonProps>(), {
   kind: 'primary'
@@ -19,9 +20,9 @@ const { kind } = withDefaults(defineProps<ButtonProps>(), {
       <slot name="icon"></slot>
     </div>
 
-    <p class="button__text">
+    <Typography type="p-2">
       <slot></slot>
-    </p>
+    </Typography>
   </button>
 </template>
 

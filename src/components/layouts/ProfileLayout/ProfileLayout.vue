@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import IconLogoAlef from '@/components/icons/IconLogoAlef.vue'
 import Tab from '@/components/ui/Tab'
+import Typography from '@/components/ui/Typography'
 </script>
 
 <template>
@@ -19,7 +20,7 @@ import Tab from '@/components/ui/Tab'
     </div>
 
     <footer class="footer">
-      <p class="footer__caption">all rights reserved</p>
+      <Typography type="p-3">all rights reserved</Typography>
     </footer>
   </div>
 </template>
@@ -70,9 +71,5 @@ import Tab from '@/components/ui/Tab'
   justify-content: center;
   height: var(--header-height);
   background-color: #fafafa; // COLORS
-
-  &__caption {
-    font-size: var(--typography-p-3);
-  }
 }
 </style>
