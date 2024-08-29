@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProfileLayout from '@/components/layouts/ProfileLayout.vue';
+import ProfileLayout from '@/components/layouts/ProfileLayout/ProfileLayout.vue'
 </script>
 
 <template>
@@ -10,5 +10,4 @@ import ProfileLayout from '@/components/layouts/ProfileLayout.vue';
   </ProfileLayout>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
