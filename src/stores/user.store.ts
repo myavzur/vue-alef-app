@@ -2,28 +2,19 @@ import type { UpdateUserInfoParams, User } from '@/interfaces'
 import { defineStore } from 'pinia'
 
 interface State {
-  user: User | null
+  user: User
 }
 
 export const useUserStore = defineStore('user', {
-  state: (): State => ({
-    user: {
-      id: Math.random(),
-      name: 'John Doe',
-      age: 25,
-      children: [
-        {
-          id: Math.random(),
-          name: 'Алексей',
-          age: 13,
-          children: []
-        }
-      ]
+  state: (): State => {
+    const userInStore = localStorage.getItem('user')
+    return {
+      user: userInStore ? JSON.parse(userInStore) : { children: [] }
     }
-  }),
+  },
   actions: {
-    setUser(newUser: User) {
-      this.user = newUser
+    saveUser() {
+      localStorage.setItem('user', JSON.stringify(this.user))
     },
 
     updateUserInfo(newInfo: UpdateUserInfoParams) {
@@ -33,16 +24,22 @@ export const useUserStore = defineStore('user', {
         ...this.user,
         ...newInfo
       }
+
+      this.saveUser()
     },
 
     addUserChildren(children: User[]) {
       if (!this.user) return
       this.user.children.push(...children)
+
+      this.saveUser()
     },
 
     removeUserChild(id: User['id']) {
       if (!this.user) return
       this.user.children = this.user.children.filter((child) => child.id !== id)
+
+      this.saveUser()
     }
   }
 })
