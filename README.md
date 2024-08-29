@@ -1,6 +1,8 @@
 # testing-project-vue
 
-This template should help get you started developing with Vue 3 in Vite.
+Версия `node`: 20.13.1
+
+Версия `npm`: 10.5.2
 
 ## Recommended IDE Setup
 
