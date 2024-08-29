@@ -4,4 +4,5 @@ export interface TextFieldProps {
   type?: 'text' | 'number'
   placeholder?: string
   isReadonly?: boolean
+  errorMessage?: string
 }

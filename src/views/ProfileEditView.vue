@@ -7,7 +7,6 @@ import ProfileLayout from '@/components/layouts/ProfileLayout'
 import TextField from '@/components/ui/TextField'
 import Button from '@/components/ui/Button'
 import { IconPlus } from '@/components/icons'
-import { storeToRefs } from 'pinia'
 import Typography from '@/components/ui/Typography/Typography.vue'
 
 const userStore = useUserStore()
@@ -17,7 +16,13 @@ const userData = reactive<UpdateUserInfoParams>({
   age: userStore?.user?.age
 })
 
+const userDataErrors = reactive<Record<keyof UpdateUserInfoParams, string>>({
+  age: '',
+  name: ''
+})
+
 const draftChildren = reactive<Map<User['id'], DraftUser>>(new Map([]))
+const draftChildrenErrors = reactive<Map<User['id'], DraftUser>>(new Map([]))
 
 // Total length of existing children and draft children
 const totalChildren = computed(() => {
@@ -44,12 +49,15 @@ const removeDraftChild = (id: User['id']) => {
 }
 
 const handleSubmit = () => {
-  const isDraftChildrenValid = Array.from(draftChildren.values()).every(
-    (child) => child.name && child.age
-  )
+  console.log(userData)
+  if (!userData.name) {
+    userDataErrors.name = 'Это поле обязательно для заполнения'
+    console.log(userDataErrors)
+    return
+  }
 
-  if (!isDraftChildrenValid) {
-    console.log('Не заполнены все поля')
+  if (!userData.age) {
+    userDataErrors.age = 'Это поле обязательно для заполнения'
     return
   }
 
@@ -68,7 +76,13 @@ const handleSubmit = () => {
       </div>
 
       <div class="info__rows">
-        <TextField label="Имя" name="name" placeholder="Введите имя" v-model.trim="userData.name" />
+        <TextField
+          label="Имя"
+          name="name"
+          placeholder="Введите имя"
+          v-model.trim="userData.name"
+          :errorMessage="userDataErrors.name"
+        />
 
         <TextField
           label="Возраст"
@@ -76,6 +90,7 @@ const handleSubmit = () => {
           placeholder="Введите возраст"
           type="number"
           v-model="userData.age"
+          :errorMessage="userDataErrors.age"
         />
       </div>
     </div>
@@ -114,22 +129,18 @@ const handleSubmit = () => {
           </div>
         </template>
 
-        <div
-          class="info__row"
-          v-for="[draftChildId, draftChild] in draftChildren"
-          :key="draftChildId"
-        >
+        <div class="info__row" v-for="draftChild of draftChildren.values()" :key="draftChild.id">
           <TextField label="Имя" name="name" placeholder="Введите имя" v-model="draftChild.name" />
 
           <TextField
+            v-model="draftChild.age"
             label="Возраст"
             name="age"
             placeholder="Введите возраст"
             type="number"
-            v-model="draftChild.age"
           />
 
-          <Button kind="primary-white" @click="removeDraftChild(draftChildId)">Удалить</Button>
+          <Button kind="primary-white" @click="removeDraftChild(draftChild.id)">Удалить</Button>
         </div>
       </div>
     </div>
