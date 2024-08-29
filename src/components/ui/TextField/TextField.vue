@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Typography from '../Typography/Typography.vue'
+import Typography from '@/components/ui/Typography'
 import type { TextFieldProps } from './TextField.interface'
 
 withDefaults(defineProps<TextFieldProps>(), {
