@@ -4,31 +4,28 @@ import TextField from '@/components/ui/TextField'
 import Button from '@/components/ui/Button'
 import { IconPlus } from '@/components/icons'
 import ProfileInfo, { ProfileInfoRow } from '@/components/ui/ProfileInfo'
-import { useUserDraftChildren, useUserData } from '@/composables'
+import { useDraftChildren, useUserData } from '@/composables'
 import Typography from '@/components/ui/Typography/Typography.vue'
+import { computed } from 'vue'
+import { useExistingChildren } from '@/composables/useExistingChildren'
 
-const { userData, userDataErrors, saveData, validateData } = useUserData()
+const userData = useUserData()
+const existingChildren = useExistingChildren()
+const draftChildren = useDraftChildren()
 
-const {
-  draftChildren,
-  createDraftChild,
-  removeDraftChild,
-  hasExistingChildren,
-  removeExistingChild,
-  draftChildrenErrors,
-  saveDraftChildren,
-  totalChildren,
-  validateDraftChildren
-} = useUserDraftChildren()
+/** Total length of existing children and draft children */
+const totalChildren = computed(() => {
+  return existingChildren.total.value + draftChildren.total.value
+})
 
 const handleSubmit = () => {
-  const isUserDataValid = validateData()
-  const isDraftChildrenValid = validateDraftChildren()
+  const isUserDataValid = userData.validate()
+  const isDraftChildrenValid = draftChildren.validate()
 
   if (!isUserDataValid || !isDraftChildrenValid) return
 
-  saveData()
-  saveDraftChildren()
+  userData.save()
+  existingChildren.addDraftChildren(draftChildren.children, () => draftChildren.reset())
 }
 </script>
 
@@ -39,9 +36,9 @@ const handleSubmit = () => {
         label="Имя"
         name="name"
         placeholder="Введите имя"
-        v-model.trim="userData.name"
-        :isError="Boolean(userDataErrors.name)"
-        :errorMessage="userDataErrors.name"
+        v-model.trim="userData.data.name"
+        :isError="Boolean(userData.errors.name)"
+        :errorMessage="userData.errors.name"
       />
 
       <TextField
@@ -49,40 +46,48 @@ const handleSubmit = () => {
         name="age"
         placeholder="Введите возраст"
         type="number"
-        v-model="userData.age"
-        :isError="Boolean(userDataErrors.age)"
-        :errorMessage="userDataErrors.age"
+        v-model="userData.data.age"
+        :isError="Boolean(userData.errors.age)"
+        :errorMessage="userData.errors.age"
       />
     </ProfileInfo>
 
     <ProfileInfo class="profile__info" label="Дети (макс. 5)">
       <template #controls>
-        <Button :disabled="totalChildren >= 5" @click="createDraftChild" kind="secondary">
+        <Button :disabled="totalChildren >= 5" @click="draftChildren.create()" kind="secondary">
           <template #icon><IconPlus /></template>
           <template #default>Добавить ребенка</template>
         </Button>
       </template>
 
       <template #default>
-        <template v-if="hasExistingChildren">
-          <ProfileInfoRow v-for="child of existingChildren" :key="child.id">
-            <TextField v-model="child.name" label="Имя" isReadonly />
-            <TextField v-model="child.age" label="Возраст" isReadonly />
+        <template v-if="existingChildren.total.value > 0">
+          <ProfileInfoRow
+            v-for="existingChild of existingChildren.children.value"
+            :key="existingChild.id"
+          >
+            <TextField v-model="existingChild.name" label="Имя" isReadonly />
+            <TextField v-model="existingChild.age" label="Возраст" isReadonly />
 
-            <Button kind="primary-white" @click="removeExistingChild(child.id)">Удалить</Button>
+            <Button kind="primary-white" @click="existingChildren.remove(existingChild.id)"
+              >Удалить</Button
+            >
           </ProfileInfoRow>
         </template>
 
         <Typography v-else type="p-3">Имеются дети? Добавьте их здесь.</Typography>
 
-        <template v-if="draftChildren.size > 0">
-          <ProfileInfoRow v-for="draftChild of draftChildren.values()" :key="draftChild.id">
+        <template v-if="draftChildren.total.value > 0">
+          <ProfileInfoRow
+            v-for="draftChild of draftChildren.children.values()"
+            :key="draftChild.id"
+          >
             <TextField
               label="Имя"
               name="child-name"
               placeholder="Введите имя"
               v-model="draftChild.name"
-              :isError="Boolean(draftChildrenErrors.get(draftChild.id)?.name)"
+              :isError="Boolean(draftChildren.errors.get(draftChild.id)?.name)"
             />
 
             <TextField
@@ -91,10 +96,12 @@ const handleSubmit = () => {
               name="child-age"
               placeholder="Введите возраст"
               type="number"
-              :isError="Boolean(draftChildrenErrors.get(draftChild.id)?.age)"
+              :isError="Boolean(draftChildren.errors.get(draftChild.id)?.age)"
             />
 
-            <Button kind="primary-white" @click="removeDraftChild(draftChild.id)"> Удалить </Button>
+            <Button kind="primary-white" @click="draftChildren.remove(draftChild.id)">
+              Удалить
+            </Button>
           </ProfileInfoRow>
         </template>
       </template>

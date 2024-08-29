@@ -7,33 +7,32 @@ type Errors = Record<keyof UpdateUserDataDTO, string>
 export const useUserData = () => {
   const userStore = useUserStore()
 
-  const userData: UpdateUserDataDTO = reactive({
+  const data: UpdateUserDataDTO = reactive({
     name: userStore?.user?.name,
     age: userStore?.user?.age
   })
 
-  const userDataErrors: Errors = reactive({
+  const errors: Errors = reactive({
     age: '',
     name: ''
   })
 
-  const validateData = () => {
-    userDataErrors.name = userData.name ? '' : 'Это поле обязательно для заполнения'
-    userDataErrors.age =
-      typeof userData.age === 'number' ? '' : 'Это поле обязательно для заполнения'
+  const validate = () => {
+    errors.name = data.name ? '' : 'Это поле обязательно для заполнения'
+    errors.age = typeof data.age === 'number' ? '' : 'Это поле обязательно для заполнения'
 
-    const isValid = !userDataErrors.name && !userDataErrors.age
+    const isValid = !errors.name && !errors.age
     return isValid
   }
 
-  const saveData = () => {
-    userStore.updateUserInfo(userData)
+  const save = () => {
+    userStore.updateInfo(data)
   }
 
   return {
-    userData,
-    userDataErrors,
-    validateData,
-    saveData
+    data,
+    errors,
+    validate,
+    save
   }
 }

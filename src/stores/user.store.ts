@@ -1,4 +1,4 @@
-import type { UpdateUserInfoParams, User } from '@/interfaces'
+import type { UpdateUserDataDTO, User } from '@/interfaces'
 import { defineStore } from 'pinia'
 
 interface State {
@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', {
       localStorage.setItem('user', JSON.stringify(this.user))
     },
 
-    updateUserInfo(newInfo: UpdateUserInfoParams) {
+    updateInfo(newInfo: UpdateUserDataDTO) {
       if (!this.user) return
 
       this.user = {
@@ -28,14 +28,14 @@ export const useUserStore = defineStore('user', {
       this.saveUser()
     },
 
-    addUserChildren(children: User[]) {
+    addChildren(children: User[]) {
       if (!this.user) return
       this.user.children.push(...children)
 
       this.saveUser()
     },
 
-    removeUserChild(id: User['id']) {
+    removeChild(id: User['id']) {
       if (!this.user) return
       this.user.children = this.user.children.filter((child) => child.id !== id)
 

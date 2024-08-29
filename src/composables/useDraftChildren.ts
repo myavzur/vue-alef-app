@@ -1,53 +1,39 @@
-import type { User, DraftUser, DraftUserWithId } from '@/interfaces'
-import { useUserStore } from '@/stores'
+import type { User, DraftChild, DraftChildWithId } from '@/interfaces'
 import { reactive, computed } from 'vue'
 
-type DraftChildrenErrors = Map<User['id'], Partial<Record<keyof DraftUser, string>>>
-type DraftChildren = Map<User['id'], DraftUserWithId>
+type DraftChildrenErrors = Map<User['id'], Partial<Record<keyof DraftChild, string>>>
+type DraftChildren = Map<User['id'], DraftChildWithId>
 
 export const useDraftChildren = () => {
-  const userStore = useUserStore()
+  const errors: DraftChildrenErrors = reactive(new Map([]))
+  const children: DraftChildren = reactive(new Map([]))
+  const total = computed(() => children.size)
 
-  const draftChildrenErrors: DraftChildrenErrors = reactive(new Map([]))
-  const draftChildren: DraftChildren = reactive(new Map([]))
-
-  /** Total length of existing children and draft children */
-  const totalChildren = computed(() => {
-    if (!userStore.user.children) return draftChildren.size
-    return userStore.user.children.length + draftChildren.size
-  })
-
-  const createDraftChild = () => {
+  const create = () => {
     const childId = Math.random()
 
-    draftChildren.set(childId, {
+    children.set(childId, {
       id: childId,
       name: undefined,
       age: undefined
     })
   }
 
-  const removeDraftChild = (id: User['id']) => {
-    draftChildren.delete(id)
+  const remove = (id: DraftChildWithId['id']) => {
+    children.delete(id)
   }
 
-  const saveDraftChildren = () => {
-    const newChildren = Array.from(draftChildren.values()) as User[]
-    userStore.addUserChildren(newChildren)
-    draftChildren.clear()
-  }
-
-  const validateDraftChildren = () => {
-    draftChildrenErrors.clear()
+  const validate = () => {
+    errors.clear()
 
     let isValid = true
-    if (!draftChildren.size) return isValid
+    if (!children.size) return isValid
 
-    draftChildren.forEach((draftChild) => {
-      const isNameValid = draftChild.name
-      const isAgeValid = draftChild.age
+    children.forEach((child) => {
+      const isNameValid = child.name
+      const isAgeValid = child.age
 
-      draftChildrenErrors.set(draftChild.id, {
+      errors.set(child.id, {
         name: isNameValid ? '' : 'Это поле обязательно для заполнения',
         age: isAgeValid ? '' : 'Это поле обязательно для заполнения'
       })
@@ -55,19 +41,21 @@ export const useDraftChildren = () => {
       isValid = Boolean(isNameValid && isAgeValid)
     })
 
-    console.log(draftChildrenErrors)
-
     return isValid
   }
 
-  return {
-    draftChildrenErrors,
-    draftChildren,
-    totalChildren,
+  const reset = () => {
+    children.clear()
+  }
 
-    createDraftChild,
-    removeDraftChild,
-    validateDraftChildren,
-    saveDraftChildren
+  return {
+    errors,
+    children,
+    total,
+
+    create,
+    remove,
+    validate,
+    reset
   }
 }
