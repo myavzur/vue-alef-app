@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import ProfileLayout from '@/components/layouts/ProfileLayout/ProfileLayout.vue'
-import Typography from '@/components/ui/Typography'
-import TextField from '@/components/ui/TextField'
-import ProfileInfo, { ProfileInfoRow } from '@/components/ui/ProfileInfo'
-import { useUserStore } from '@/stores'
-import { useExistingChildren } from '@/composables'
+
 import { ageToString } from '@/helpers'
+
+import { useUserStore } from '@/stores'
+
+import { useExistingChildren } from '@/hooks'
+
+import { ProfileLayout } from '@/components/layouts'
+
+import ProfileInfo, { ProfileInfoRow } from '@/components/ui/ProfileInfo'
+import TextField from '@/components/ui/TextField'
+import Typography from '@/components/ui/Typography'
 
 const userStore = useUserStore()
 const existingChildren = useExistingChildren()

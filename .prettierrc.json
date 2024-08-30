@@ -1,8 +1,25 @@
 {
-  "$schema": "https://json.schemastore.org/prettierrc",
+  "$schema": ".prettierrc.schema.json",
   "semi": false,
   "tabWidth": 2,
   "singleQuote": true,
   "printWidth": 100,
-  "trailingComma": "none"
+  "trailingComma": "none",
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^@/router",
+    "^@/assets",
+    "^@/interfaces",
+    "^@/helpers",
+    "^@/stores",
+    "^@/hooks",
+    "^@/components/layouts",
+    "^@/components/icons",
+    "^@/components/ui",
+    "^@/styles",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

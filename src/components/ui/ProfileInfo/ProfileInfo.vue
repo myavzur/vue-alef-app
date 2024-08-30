@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import Typography from '@/components/ui/Typography/Typography.vue'
+import Typography from '@/components/ui/Typography'
+
 import type { ProfileInfoProps } from './ProfileInfo.interface'
 
 const { label } = defineProps<ProfileInfoProps>()

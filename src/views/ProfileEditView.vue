@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import ProfileLayout from '@/components/layouts/ProfileLayout'
-import TextField from '@/components/ui/TextField'
-import Button from '@/components/ui/Button'
-import { IconPlus } from '@/components/icons'
-import ProfileInfo, { ProfileInfoRow } from '@/components/ui/ProfileInfo'
-import { useDraftChildren, useUserData } from '@/composables'
-import Typography from '@/components/ui/Typography/Typography.vue'
 import { computed } from 'vue'
-import { useExistingChildren } from '@/composables/useExistingChildren'
+
+import { useDraftChildren, useExistingChildren, useUserData } from '@/hooks'
+
+import { ProfileLayout } from '@/components/layouts'
+
+import { IconPlus } from '@/components/icons'
+
+import Button from '@/components/ui/Button'
+import ProfileInfo, { ProfileInfoRow } from '@/components/ui/ProfileInfo'
+import TextField from '@/components/ui/TextField'
+import Typography from '@/components/ui/Typography'
 
 const userData = useUserData()
 const existingChildren = useExistingChildren()

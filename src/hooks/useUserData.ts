@@ -1,6 +1,8 @@
-import type { UpdateUserDataDTO } from '@/interfaces'
-import { useUserStore } from '@/stores'
 import { reactive } from 'vue'
+
+import type { UpdateUserDataDTO } from '@/interfaces'
+
+import { useUserStore } from '@/stores'
 
 type Errors = Record<keyof UpdateUserDataDTO, string>
 

@@ -1,5 +1,6 @@
-import type { User, DraftChild, DraftChildWithId } from '@/interfaces'
-import { reactive, computed } from 'vue'
+import { computed, reactive } from 'vue'
+
+import type { DraftChild, DraftChildWithId, User } from '@/interfaces'
 
 type DraftChildrenErrors = Map<User['id'], Partial<Record<keyof DraftChild, string>>>
 type DraftChildren = Map<User['id'], DraftChildWithId>

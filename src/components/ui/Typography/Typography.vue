@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { parseType } from './helpers'
+
 import type { TypographyProps } from './Typography.interface'
+import { parseType } from './helpers'
 
 const { type } = withDefaults(defineProps<TypographyProps>(), {
   weight: 'regular'

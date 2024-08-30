@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import IconLogoAlef from '@/components/icons/IconLogoAlef.vue'
+
 import Tab from '@/components/ui/Tab'
 import Typography from '@/components/ui/Typography'
 </script>

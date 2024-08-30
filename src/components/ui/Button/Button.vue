@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { ButtonProps } from './Button.interface'
 import Typography from '@/components/ui/Typography'
+
+import type { ButtonProps } from './Button.interface'
 
 const { kind } = withDefaults(defineProps<ButtonProps>(), {
   kind: 'primary'

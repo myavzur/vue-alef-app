@@ -1,5 +1,6 @@
-import type { UpdateUserDataDTO, User } from '@/interfaces'
 import { defineStore } from 'pinia'
+
+import type { UpdateUserDataDTO, User } from '@/interfaces'
 
 interface State {
   user: User

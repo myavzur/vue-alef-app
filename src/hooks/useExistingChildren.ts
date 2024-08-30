@@ -1,6 +1,8 @@
-import type { DraftChildren, User } from '@/interfaces'
-import { useUserStore } from '@/stores'
 import { computed } from 'vue'
+
+import type { DraftChildren, User } from '@/interfaces'
+
+import { useUserStore } from '@/stores'
 
 export const useExistingChildren = () => {
   const userStore = useUserStore()
