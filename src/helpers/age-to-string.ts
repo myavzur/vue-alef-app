@@ -17,21 +17,3 @@ export const ageToString = (age: number) => {
   }
   return `${age} ${suffix}`
 }
-
-export const ageToStr2 = (age: number): string => {
-  const count = age % 100
-  if (count >= 5 && count <= 20) {
-    return `${age} лет`
-  }
-
-  const lastDigit = count % 10
-  if (lastDigit === 1) {
-    return `${age} год`
-  }
-
-  if (lastDigit >= 2 && lastDigit <= 4) {
-    return `${age} года`
-  }
-
-  return `${age} лет`
-}

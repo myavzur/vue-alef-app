@@ -1,1 +1,1 @@
-export * from './ageToString'
+export * from './age-to-string'
