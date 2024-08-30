@@ -54,7 +54,7 @@ const handleSubmit = () => {
 
     <ProfileInfo class="profile__info" label="Дети (макс. 5)">
       <template #controls>
-        <Button :disabled="totalChildren >= 5" @click="draftChildren.create()" kind="secondary">
+        <Button v-if="totalChildren < 5" @click="draftChildren.create()" kind="secondary">
           <template #icon><IconPlus /></template>
           <template #default>Добавить ребенка</template>
         </Button>
