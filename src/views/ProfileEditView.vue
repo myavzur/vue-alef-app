@@ -66,8 +66,8 @@ const handleSubmit = () => {
             v-for="existingChild of existingChildren.children.value"
             :key="existingChild.id"
           >
-            <TextField v-model="existingChild.name" label="Имя" isReadonly />
-            <TextField v-model="existingChild.age" label="Возраст" isReadonly />
+            <TextField :modelValue="existingChild.name" label="Имя" isReadonly />
+            <TextField :modelValue="existingChild.age" label="Возраст" isReadonly />
 
             <Button kind="primary-white" @click="existingChildren.remove(existingChild.id)"
               >Удалить</Button

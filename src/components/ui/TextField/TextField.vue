@@ -40,6 +40,8 @@ const model = defineModel({
 
 <style scoped lang="scss">
 .field {
+  width: 100%;
+
   &__error {
     color: #db524e; // COLORS
   }
